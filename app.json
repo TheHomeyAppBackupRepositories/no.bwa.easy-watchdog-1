@@ -1,0 +1,176 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "no.bwa.easy-watchdog",
+  "version": "1.0.4",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Easy Watchdog"
+  },
+  "description": {
+    "en": "Easy Watch And Alert"
+  },
+  "category": [
+    "tools"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Bjørn-Willy Arntzen"
+  },
+  "brandColor": "#2c506f",
+  "homepage": "https://wiki.bwa.no/x/3ADUDg",
+  "support": "mailto:easywatchdog@bwa.no",
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "bwarntzen"
+      }
+    }
+  },
+  "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Alert occurred"
+        },
+        "tokens": [
+          {
+            "type": "string",
+            "name": "alarm",
+            "title": {
+              "en": "alert",
+              "no": "Alarm"
+            },
+            "example": {
+              "en": "noe skjedde"
+            }
+          }
+        ],
+        "id": "alert"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Is Alive"
+        },
+        "titleFormatted": {
+          "en": "[[name]] Is alive,  time-to-live [[ttl]] minutes with [[value]]"
+        },
+        "args": [
+          {
+            "type": "text",
+            "name": "name",
+            "placeholder": {
+              "en": "name"
+            }
+          },
+          {
+            "type": "number",
+            "name": "ttl",
+            "placeholder": {
+              "en": "ttl"
+            },
+            "min": 0,
+            "max": 1000,
+            "step": 1
+          },
+          {
+            "type": "number",
+            "name": "value",
+            "placeholder": {
+              "en": "value"
+            },
+            "min": 0,
+            "max": 1000
+          }
+        ],
+        "id": "is-alive"
+      },
+      {
+        "title": {
+          "en": "Is Below"
+        },
+        "titleFormatted": {
+          "en": "Check [[name]] with value [[value]] is below [[limit]]"
+        },
+        "args": [
+          {
+            "type": "text",
+            "name": "name",
+            "placeholder": {
+              "en": "name"
+            }
+          },
+          {
+            "type": "number",
+            "name": "value",
+            "placeholder": {
+              "en": "value"
+            },
+            "min": 0,
+            "max": 1000,
+            "step": 1
+          },
+          {
+            "type": "number",
+            "name": "limit",
+            "placeholder": {
+              "en": "limit"
+            },
+            "min": 0,
+            "max": 1000,
+            "step": 1
+          }
+        ],
+        "id": "is-below"
+      },
+      {
+        "title": {
+          "en": "Is Higher"
+        },
+        "titleFormatted": {
+          "en": "Check [[name]] with value [[value]] is higher than [[limit]]"
+        },
+        "args": [
+          {
+            "type": "text",
+            "name": "name",
+            "placeholder": {
+              "en": "name"
+            }
+          },
+          {
+            "type": "number",
+            "name": "value",
+            "placeholder": {
+              "en": "value"
+            },
+            "min": 0,
+            "max": 1000,
+            "step": 1
+          },
+          {
+            "type": "number",
+            "name": "limit",
+            "placeholder": {
+              "en": "limit"
+            },
+            "min": 0,
+            "max": 1000,
+            "step": 1
+          }
+        ],
+        "id": "is-higher"
+      }
+    ]
+  }
+}
