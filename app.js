@@ -7,13 +7,20 @@ class EasyWatchAndAlert extends Homey.App {
   pollingTimeout;
   timeZone = this.homey.clock.getTimezone();
   timestampFormat = "dd.MM.yyyy HH:mm:ss"; // norsk format
+  alertflowcard = undefined;
+  eventflowcard = undefined;
+
 
 
   /**
    * onInit is called when the app is initialized.
    */
   async onInit() {
-    this.log('EasyWatchAndAlert has been initialized');
+
+    this.alertflowcard = this.homey.flow.getTriggerCard('alert');
+    this.eventflowcard = this.homey.flow.getTriggerCard('event');
+
+    this.log(`EasyWatchAndAlert has been initialized ...`);
 
     // if (process.env.DEBUG === '1'){
     //   try{ 
@@ -46,12 +53,30 @@ class EasyWatchAndAlert extends Homey.App {
       const aliveTs = DateTime.now().setZone(this.homey.clock.getTimezone()).plus({minutes: value['ttl']});
       const nowStr = now.toFormat("dd.MM.yyyy HH:mm:ss");
       const aliveTsStr = aliveTs.toFormat("dd.MM.yyyy HH:mm:ss");
+
+      try {
+
+        const existingElement = this.homey.settings.get(value['name']);
+        if(existingElement !== undefined) {
+          //this.log('existingElement=',existingElement);
+          if(existingElement.alarm !== undefined && true === existingElement.alarm) {
+            this.log('resetter alarm',existingElement.name,'har sjekket inn igjen');
+            this.alertflowcard.trigger({'alarm' : existingElement.name + ' har sjekket inn igjen. Alarm er resatt, sist hørt fra: ' + existingElement.ts + ' Neste grenseverdi er ' + aliveTsStr});
+          }
+        }
+
+      } catch (err) {
+        this.log('err', err);
+      }
   
+
       value['ts'] = nowStr;
       value['aliveTs'] = aliveTsStr;
       value['check'] = undefined;
+      value['alarm'] = undefined;
 
-      this.log('is live ttl=', value.ttl,  'ts=', value.ts, 'aliveTs=', value.aliveTs, 'check=', value.check, 'value=', value.value, ' ', value.name,);
+      this.log('is live ttl=', value.ttl,  'ts=', value.ts, 'aliveTs=', value.aliveTs, 'check=', value.check, 'value=', value.value, 'valuename=', value.valuename, 'alarm=', value.alarm, 'name=', value.name);
+      this.eventflowcard.trigger({'event' : 'is live: ttl=' + value.ttl + ' ts=' + value.ts + ' aliveTs=' + value.aliveTs + ' ' + value.valuename + '='+  value.value + ' name=' + value.name});
 
       this.homey.settings.set(value['name'], value);
 
@@ -67,6 +92,7 @@ class EasyWatchAndAlert extends Homey.App {
       value['ts'] = nowStr;
       value['check'] = undefined;
       value['type'] = 'is-below';
+      value['alarm'] = undefined;
 
       this.log('is below   type=', value.type,  'ts=', value.ts, 'limit=', value.limit, 'check=', value.check, 'value=', value.value, ' ', value.name,);
 
@@ -83,6 +109,7 @@ class EasyWatchAndAlert extends Homey.App {
       value['ts'] = nowStr;
       value['check'] = undefined;
       value['type'] = 'is-higher';
+      value['alarm'] = undefined;
 
       this.log('is higher   type=', value.type,  'ts=', value.ts, 'limit=', value.limit, 'check=', value.check, 'value=', value.value, ' ', value.name,);
 
@@ -134,11 +161,13 @@ class EasyWatchAndAlert extends Homey.App {
 
     for (let index = 0; index < keys.length; index++) {
       const element = this.homey.settings.get(keys[index]);
+      //this.log('element', element);
       if(element.aliveTs !== undefined) {
         if( this.toDateTimeFromTimestampString(element.aliveTs) < now && element.check === undefined) {
           this.log('element', element.name, element.aliveTs);
           flowcard.trigger({'alarm' : element.name + ' har ikke sjekket inn siden ' + element.ts + ' Grenseverdi er ' + element.aliveTs});
           element['check'] = true;
+          element['alarm'] = true;
           this.homey.settings.set(element['name'], element); // lagrer tilbake
           this.log('is-alive, alarm er clear');
         }
@@ -168,7 +197,7 @@ class EasyWatchAndAlert extends Homey.App {
 
    
     //this.log('----- ---- -----');
-    this.startPolling(6);
+    this.startPolling(13);
     //this.startPolling(10);
   }  
 

@@ -1,8 +1,8 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "no.bwa.easy-watchdog",
-  "version": "1.0.4",
-  "compatibility": ">=5.0.0",
+  "version": "1.1.9",
+  "compatibility": ">=10.0.0",
   "sdk": 3,
   "platforms": [
     "local"
@@ -55,6 +55,25 @@
           }
         ],
         "id": "alert"
+      },
+      {
+        "title": {
+          "en": "Event occurred"
+        },
+        "tokens": [
+          {
+            "type": "string",
+            "name": "event",
+            "title": {
+              "en": "Event",
+              "no": "Hendelse"
+            },
+            "example": {
+              "en": "noe skjedde"
+            }
+          }
+        ],
+        "id": "event"
       }
     ],
     "actions": [
@@ -63,7 +82,7 @@
           "en": "Is Alive"
         },
         "titleFormatted": {
-          "en": "[[name]] Is alive,  time-to-live [[ttl]] minutes with [[value]]"
+          "en": "[[name]] Is alive,  time-to-live [[ttl]] minutes with value [[value]] and name [[valuename]]"
         },
         "args": [
           {
@@ -91,6 +110,14 @@
             },
             "min": 0,
             "max": 1000
+          },
+          {
+            "type": "text",
+            "name": "valuename",
+            "required": false,
+            "placeholder": {
+              "en": "value-name"
+            }
           }
         ],
         "id": "is-alive"
